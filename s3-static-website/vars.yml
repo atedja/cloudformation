@@ -1,0 +1,9 @@
+---
+region: "us-east-2"
+website:
+  domain: "example.com"
+  bucket: "example.com"
+  www_bucket: "www.example.com"
+  logging-bucket: "my-website-bucket-logs"
+  error_document: "error.html"
+  index_document: "index.html"

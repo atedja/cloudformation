@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: "public-read"
+      BucketName: {{ website.bucket }}
+      WebsiteConfiguration:
+        ErrorDocument: {{ website.error_document }}
+        IndexDocument: {{ website.index_document }}
+
+  WWWBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: "public-read"
+      BucketName: {{ website.www_bucket }}
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: {{ website.bucket }}
+
+  Policy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: {{ bucket.name }}
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Sid: "PublicReadGetObject"
+            Effect: "Allow"
+            Principal: "*"
+            Action:
+              - "s3:GetObject"
+            Resource:
+              - "arn:aws:s3:::{{ website.bucket }}/*"
+
+Outputs:
+  VpcId:
+    Description: VPC Id
+    Value: !Ref VPC
+  SubnetIds:
+    Description: List of Subnet Ids
+    Value: !Join
+      - ','
+      - {%- for az in vpc.availability_zones %}
+        {%- for subnet in az.subnets %}
+        - !Ref {{ subnet.resource_name }}
+        {%- endfor %}
+        {%- endfor %}
+  PrivateHTTPSecurityGroupId:
+    Description: Security Group Id for Private HTTP/S
+    Value: !Ref PrivateHTTPSecurityGroup
+  PublicHTTPSecurityGroupId:
+    Description: Security Group Id for Public HTTP/S
+    Value: !Ref PublicHTTPSecurityGroup
+  PrivateSSHSecurityGroupId:
+    Description: Security Group Id for SSH access from within VPC
+    Value: !Ref PrivateSSHSecurityGroup
