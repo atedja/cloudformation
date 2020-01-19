@@ -38,7 +38,7 @@ Resources:
   # ----- {{ az.resource_name }} -----
 
   # Create a NAT Gateway
-  {{ az.resource_name}}NatGatewayElasticIP:
+  {{ az.resource_name }}NatGatewayElasticIP:
     Type: "AWS::EC2::EIP"
     Properties:
       Domain: vpc
@@ -47,14 +47,14 @@ Resources:
     Properties:
       AllocationId: !GetAtt {{ az.resource_name}}NatGatewayElasticIP.AllocationId
       SubnetId: !Ref {{ az.nat_gateway.subnet }}
-  {{ az.resource_name}}PrivateRouteTable:
+  {{ az.resource_name }}PrivateRouteTable:
     Type: "AWS::EC2::RouteTable"
     Properties:
       VpcId: !Ref VPC
       Tags:
         - Key: "Name"
           Value: "{{ az.private_route_table.name }}"
-  {{ az.resource_name}}PrivateInternetRoute:
+  {{ az.resource_name }}PrivateInternetRoute:
     Type: "AWS::EC2::Route"
     Properties: 
       DestinationCidrBlock: "0.0.0.0/0"
